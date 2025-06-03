@@ -8,6 +8,9 @@
 
 This project is an implementation of gameplay tags, similar to those found in Unreal Engine, for use in Unity. Gameplay tags are a flexible and efficient way to handle and categorize gameplay-related properties and states.
 
+THIS IS A FORK OF THE BANDOWARE ORIGINAL IMPLEMENTATION AVAILABLE HERE:
+https://github.com/BandoWare/GameplayTags
+
 ## Features
 
 - Tag-based system for categorizing and managing gameplay elements.
@@ -23,7 +26,7 @@ This project is an implementation of gameplay tags, similar to those found in Un
    - Click the `+` button and select `Add package from git URL...`.
    - Enter the following URL:
      ```
-     https://github.com/BandoWare/GameplayTags.git
+     https://github.com/Marco0808/UnityGameplayTags.git
      ```
    - Click `Add`.
 
