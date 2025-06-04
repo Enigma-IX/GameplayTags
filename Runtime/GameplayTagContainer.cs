@@ -194,6 +194,14 @@ namespace BandoWare.GameplayTags
       }
 
       /// <summary>
+      /// Initializes a new instance of the <see cref="GameplayTagContainer"/> class from a single tag.
+      /// </summary>
+      public GameplayTagContainer(GameplayTag tag)
+      {
+         AddTag(tag);
+      }
+
+      /// <summary>
       /// Creates a clone of this container.
       /// </summary>
       public GameplayTagContainer Clone()
