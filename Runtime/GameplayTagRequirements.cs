@@ -27,6 +27,11 @@ namespace BandoWare.GameplayTags
          m_RequiredTags = requiredTags;
       }
 
+      public readonly bool Matches(in GameplayTag tag)
+      {
+         return !m_ForbiddenTags.HasTag(tag) && (m_RequiredTags.IsEmpty || m_RequiredTags.HasTag(tag));
+      }
+      
       public readonly bool Matches<T>(in T container) where T : IGameplayTagContainer
       {
          return !container.HasAny(m_ForbiddenTags) && container.HasAll(m_RequiredTags);
