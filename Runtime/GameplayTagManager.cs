@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BandoWare.GameplayTags
 {
-   public class GameplayTagManager
+   public static class GameplayTagManager
    {
       public static bool HasBeenReloaded => s_HasBeenReloaded;
 
