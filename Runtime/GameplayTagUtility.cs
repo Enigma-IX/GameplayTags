@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BandoWare.GameplayTags
 {
-   public class GameplayTagUtility
+   public static class GameplayTagUtility
    {
       internal static void WarnNotExplictlyAddedTagRemoval(GameplayTag gameplayTag)
       {

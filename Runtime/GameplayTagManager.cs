@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BandoWare.GameplayTags
 {
-   public class GameplayTagManager
+   public static class GameplayTagManager
    {
       private static Dictionary<string, GameplayTagDefinition> s_TagDefinitionsByName = new();
       private static GameplayTagDefinition[] s_TagsDefinitions;
