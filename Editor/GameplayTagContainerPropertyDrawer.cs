@@ -23,12 +23,9 @@ namespace BandoWare.GameplayTags.Editor
       {
          SerializedProperty tagNamesProperty = property.FindPropertyRelative("m_SerializedExplicitTags");
          if (tagNamesProperty.hasMultipleDifferentValues)
-            return (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 2;
+            return EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing;
 
-         if (tagNamesProperty.arraySize > 0)
-            return Mathf.Max(tagNamesProperty.arraySize * EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing, (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 2);
-
-         return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+         return (tagNamesProperty.arraySize + 1) * EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
       }
 
       public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -36,6 +33,7 @@ namespace BandoWare.GameplayTags.Editor
          label = EditorGUI.BeginProperty(position, label, property);
 
          position = EditorGUI.PrefixLabel(position, label);
+         float halfRectWidth = position.width / 2f;
 
          int oldIndentLevel = EditorGUI.indentLevel;
          EditorGUI.indentLevel = 0;
@@ -45,20 +43,30 @@ namespace BandoWare.GameplayTags.Editor
          EditorGUI.BeginDisabledGroup(explicitTagsProperty.hasMultipleDifferentValues);
 
          Rect editButtonRect = position;
-         editButtonRect.width = k_ButtonsWidth;
          editButtonRect.height = EditorGUIUtility.singleLineHeight;
+         if (explicitTagsProperty.arraySize > 0)
+         {
+            editButtonRect.x += halfRectWidth;
+            editButtonRect.width = halfRectWidth;
+         }
          if (GUI.Button(editButtonRect, s_EditTagsContent, EditorStyles.popup))
          {
             GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), explicitTagsProperty);
             Rect activatorRect = editButtonRect;
-            activatorRect.width = position.width;
-            tagTreeView.ShowPopupWindow(activatorRect, 280f);
+            activatorRect.x = editButtonRect.xMax;
+            activatorRect.y = editButtonRect.yMin;
+            activatorRect.height = 0;
+            tagTreeView.ShowPopupWindow(activatorRect);
          }
 
          EditorGUI.EndDisabledGroup();
 
          if (explicitTagsProperty.arraySize > 0)
-            DrawClearAllButton(position, explicitTagsProperty);
+         {
+            Rect clearButtonRect = editButtonRect;
+            clearButtonRect.x -= halfRectWidth;
+            DrawClearAllButton(clearButtonRect, explicitTagsProperty);
+         }
 
          if (explicitTagsProperty.hasMultipleDifferentValues)
             OnMultipleValuesGUI(position, explicitTagsProperty);
@@ -74,10 +82,10 @@ namespace BandoWare.GameplayTags.Editor
          s_TempContent.text = "Multiple tag values present.";
 
          Rect rect = position;
-         rect.xMin += k_ButtonsWidth + k_Gap;
+         rect.y += EditorGUIUtility.singleLineHeight;
          rect.height = EditorGUIUtility.singleLineHeight;
          EditorStyles.label.CalcMinMaxWidth(s_TempContent, out _, out float labelWidth);
-         rect.width = labelWidth;
+         rect.width = Mathf.Max(position.width, labelWidth);
          GUI.Label(rect, s_TempContent);
          DrawOutline(rect, new Color(1, 1, 1, 0.15f));
       }
@@ -88,8 +96,7 @@ namespace BandoWare.GameplayTags.Editor
             return;
 
          Rect tagsRect = position;
-         tagsRect.xMin += k_ButtonsWidth + k_Gap;
-         tagsRect.width = 0;
+         tagsRect.y += EditorGUIUtility.singleLineHeight;
          tagsRect.height = 0;
 
          Rect tagRect = tagsRect;
@@ -130,15 +137,7 @@ namespace BandoWare.GameplayTags.Editor
 
       private static void DrawClearAllButton(Rect positon, SerializedProperty explicitTagsProperty)
       {
-         Rect clearButtonRect = new
-         (
-            positon.x,
-            positon.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
-            k_ButtonsWidth,
-            EditorGUIUtility.singleLineHeight
-         );
-
-         if (GUI.Button(clearButtonRect, "Clear All"))
+         if (GUI.Button(positon, "Clear All"))
             explicitTagsProperty.arraySize = 0;
       }
 

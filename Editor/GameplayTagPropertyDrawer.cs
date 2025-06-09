@@ -37,7 +37,7 @@ namespace BandoWare.GameplayTags.Editor
             {
                EditorWindow.GetWindow<PopupWindow>().Close();
             });
-            tagTreeView.ShowPopupWindow(position, 280f);
+            tagTreeView.ShowPopupWindow(position);
          }
 
          EditorGUI.indentLevel = oldIndentLevel;

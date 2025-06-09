@@ -6,9 +6,9 @@ namespace BandoWare.GameplayTags.Editor
 {
    public static class TreeViewMethodExtensions
    {
-      public static void ShowPopupWindow(this TreeViewPopupContent.TreeView treeView, Rect activatorRect, float maxHeight)
+      public static void ShowPopupWindow(this TreeViewPopupContent.TreeView treeView, Rect activatorRect, float width = 320f, float maxHeight = 285f)
       {
-         TreeViewPopupContent treeViewPopupContent = new(activatorRect.width, maxHeight, treeView);
+         TreeViewPopupContent treeViewPopupContent = new(width, maxHeight, treeView);
          PopupWindow.Show(activatorRect, treeViewPopupContent);
       }
    }
