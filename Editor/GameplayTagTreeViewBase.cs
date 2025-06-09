@@ -44,7 +44,7 @@ namespace BandoWare.GameplayTags.Editor
 
       public override float GetTotalHeight()
       {
-         return base.GetTotalHeight() + EditorStyles.toolbar.fixedHeight;
+         return base.GetTotalHeight() + EditorStyles.toolbar.fixedHeight * 2f;
       }
 
       public override void OnGUI(Rect rect)
@@ -52,7 +52,7 @@ namespace BandoWare.GameplayTags.Editor
          s_Styles ??= new Styles();
 
          Rect toolbarRect = rect;
-         toolbarRect.height = EditorStyles.toolbar.fixedHeight;
+         toolbarRect.height = EditorStyles.toolbar.fixedHeight * 2f;
          ToolbarGUI(toolbarRect);
 
          rect.yMin += toolbarRect.height;
@@ -62,6 +62,11 @@ namespace BandoWare.GameplayTags.Editor
       private void ToolbarGUI(Rect rect)
       {
          GUILayout.BeginArea(rect);
+         GUILayout.BeginVertical(EditorStyles.toolbar);
+
+         if (GUILayout.Button("Manage Tags", s_Styles.ToolbarButton, GUILayout.ExpandWidth(true)))
+            SettingsService.OpenProjectSettings("Project/Gameplay Tags");
+
          GUILayout.BeginHorizontal(EditorStyles.toolbar);
 
          if (ToolbarButton("Expand All"))
@@ -75,6 +80,7 @@ namespace BandoWare.GameplayTags.Editor
          searchString = m_SearchField.OnToolbarGUI(searchString);
 
          GUILayout.EndHorizontal();
+         GUILayout.EndVertical();
          GUILayout.EndArea();
       }
 
@@ -132,4 +138,3 @@ namespace BandoWare.GameplayTags.Editor
       }
    }
 }
-
