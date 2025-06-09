@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
@@ -51,7 +53,8 @@ namespace BandoWare.GameplayTags.Editor
          }
          if (GUI.Button(editButtonRect, s_EditTagsContent, EditorStyles.popup))
          {
-            GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), explicitTagsProperty);
+            string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
+            GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), filterTagNames, explicitTagsProperty);
             Rect activatorRect = editButtonRect;
             activatorRect.x = editButtonRect.xMax;
             activatorRect.y = editButtonRect.yMin;

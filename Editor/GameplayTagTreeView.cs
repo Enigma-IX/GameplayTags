@@ -11,8 +11,8 @@ namespace BandoWare.GameplayTags.Editor
       private Action m_OnSelectionChange;
       private SerializedProperty m_TagNameProperty;
 
-      public GameplayTagTreeView(TreeViewState treeViewState, SerializedProperty tagProperty, Action onSelectionChange)
-      : base(treeViewState)
+      public GameplayTagTreeView(TreeViewState treeViewState, string[] filterTagNames, SerializedProperty tagProperty, Action onSelectionChange)
+      : base(treeViewState, filterTagNames)
       {
          m_OnSelectionChange = onSelectionChange;
          m_TagNameProperty = tagProperty.FindPropertyRelative("m_Name");

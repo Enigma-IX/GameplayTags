@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
@@ -33,7 +35,8 @@ namespace BandoWare.GameplayTags.Editor
 
          if (EditorGUI.DropdownButton(position, s_TempContent, FocusType.Keyboard))
          {
-            GameplayTagTreeView tagTreeView = new(new TreeViewState(), property, static () =>
+            string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
+            GameplayTagTreeView tagTreeView = new(new TreeViewState(), filterTagNames, property, static () =>
             {
                EditorWindow.GetWindow<PopupWindow>().Close();
             });

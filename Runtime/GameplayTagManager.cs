@@ -19,6 +19,34 @@ namespace BandoWare.GameplayTags
          return new ReadOnlySpan<GameplayTag>(s_Tags);
       }
 
+      public static ReadOnlySpan<GameplayTag> GetAllTagsFiltered(params string[] filterTagNames)
+      {
+         InitializeIfNeeded();
+
+         if (filterTagNames == null || filterTagNames.Length == 0)
+         {
+            // No filters applied
+            return new ReadOnlySpan<GameplayTag>(s_Tags);
+         }
+
+         List<GameplayTag> filteredTags = new();
+
+         foreach (GameplayTag tag in s_Tags)
+         {
+            foreach (string filterTagName in filterTagNames)
+            {
+               // Only return the child tags of the filter tag names
+               if (tag.Name.StartsWith(filterTagName + '.'))
+               {
+                  filteredTags.Add(tag);
+                  break;
+               }
+            }
+         }
+
+         return new ReadOnlySpan<GameplayTag>(filteredTags.ToArray());
+      }
+
       internal static GameplayTagDefinition GetDefinitionFromRuntimeIndex(int runtimeIndex)
       {
          InitializeIfNeeded();

@@ -30,12 +30,14 @@ namespace BandoWare.GameplayTags.Editor
       public bool IsEmpty => m_IsEmpty;
 
       private static Styles s_Styles;
+      private string[] m_FilterTagNames;
       private SearchField m_SearchField;
       private bool m_IsEmpty;
 
-      public GameplayTagTreeViewBase(TreeViewState treeViewState)
+      public GameplayTagTreeViewBase(TreeViewState treeViewState, string[] filterTagNames)
          : base(treeViewState)
       {
+         m_FilterTagNames = filterTagNames;
          m_SearchField = new SearchField();
          showAlternatingRowBackgrounds = true;
 
@@ -105,7 +107,7 @@ namespace BandoWare.GameplayTags.Editor
 
          List<TreeViewItem> items = new();
 
-         foreach (GameplayTag tag in GameplayTagManager.GetAllTags())
+         foreach (GameplayTag tag in GameplayTagManager.GetAllTagsFiltered(m_FilterTagNames))
          {
             if (tag.Name.StartsWith("Test.") || tag.Name.Equals("Test"))
                continue;
