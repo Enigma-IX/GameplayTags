@@ -7,7 +7,7 @@ namespace BandoWare.GameplayTags
    internal class GameplayTagRegistrationContext
    {
       private List<GameplayTagDefinition> m_Definition = new();
-      private Dictionary<string, GameplayTagDefinition> m_TagsByName = new();
+      private Dictionary<string, GameplayTagDefinition> m_TagsByName = new(StringComparer.OrdinalIgnoreCase);
 
       public void RegisterTag(string name, string description = null, GameplayTagFlags flags = GameplayTagFlags.None)
       {
