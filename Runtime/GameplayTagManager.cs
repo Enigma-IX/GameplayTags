@@ -65,7 +65,28 @@ namespace BandoWare.GameplayTags
             return;
 
          GameplayTagRegistrationContext context = new();
+         IReadOnlyList<TagRenameEntry> tagRenameEntries = Array.Empty<TagRenameEntry>();
 
+         // Register all tags and rename entries found in the generated TagConfig class.
+         if (GameplayTagConfigBase.TryGetGeneratedGameplayTagConfig(out GameplayTagConfigBase tagConfig))
+         {
+            foreach (TagDefinitionEntry definitionEntry in tagConfig.GetGameplayTagDefinitionEntries())
+            {
+               try
+               {
+                  context.RegisterTag(definitionEntry.tagName, definitionEntry.description);
+               }
+               catch (Exception exception)
+               {
+                  Debug.LogError($"Failed to register tag {definitionEntry.tagName} from {tagConfig.GetType().FullName} with error: {exception.Message}");
+               }
+            }
+
+            // Load all unique TagRenameEntries.
+            tagRenameEntries = tagConfig.GetGameplayTagsRenameEntries();
+         }
+
+         // Register all tags found in any Assembly via GameplayTagAttribute.
          foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
          {
             foreach (GameplayTagAttribute attribute in assembly.GetCustomAttributes<GameplayTagAttribute>())
@@ -91,6 +112,22 @@ namespace BandoWare.GameplayTags
          s_Tags = Enumerable.ToArray(tags);
          foreach (GameplayTagDefinition definition in s_TagsDefinitions)
             s_TagDefinitionsByName[definition.TagName] = definition;
+
+         // Remap the OldTagNames registered via TagRenameEntries to point at the TagDefinition of the NewTagName.
+         // From newest (last) to oldest (first) rename entry.
+         for (int i = tagRenameEntries.Count - 1; i >= 0; i--)
+         {
+            TagRenameEntry renameEntry = tagRenameEntries[i];
+            if (s_TagDefinitionsByName.TryGetValue(renameEntry.newTagName, out GameplayTagDefinition definition))
+            {
+               // Use TryAdd, so we don't accidentally override an already valid Tag to Definition mapping
+               if (!s_TagDefinitionsByName.TryAdd(renameEntry.oldTagName, definition))
+               {
+                  Debug.LogWarning($"Invalid TagRenameEntry detected: OldTagName '{renameEntry.oldTagName}' was be renamed " +
+                                   $"to '{renameEntry.newTagName}', but is already mapped to Definition of '{definition.TagName}'");
+               }
+            }
+         }
 
          s_IsInitialized = true;
       }
