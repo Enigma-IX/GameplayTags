@@ -11,6 +11,8 @@ namespace BandoWare.GameplayTags.Editor.Config
    {
       /////////////////////////////// Member Fields ////////////////////////////////
 
+      public const string SettingsPath = "Project/Custom/Gameplay Tags";
+      
       private const string k_DefaultNewTagName = "A.B.C";
       private const float k_SpaceAfterPropertyBlocks = 15f;
 
@@ -84,7 +86,7 @@ namespace BandoWare.GameplayTags.Editor.Config
       public static SettingsProvider CreateCarambolaSettingsProvider() => new GameplayTagProjectSettingsProvider();
 
       public GameplayTagProjectSettingsProvider()
-         : base("Project/Gameplay Tags", SettingsScope.Project)
+         : base(SettingsPath, SettingsScope.Project)
       {
          keywords = GetSearchKeywordsFromSerializedObject(new SerializedObject(GameplayTagProjectSettings.instance));
 
@@ -210,12 +212,12 @@ namespace BandoWare.GameplayTags.Editor.Config
                if (GUILayout.Button(duplicateButtonContent, GUILayout.ExpandWidth(false)))
                {
                   TagDefinitionEntry newEntry = new(entry.tagName, entry.description);
-                  GameplayTagDefinitionEditWindow.ShowModal(TagDefinitionOperation.CreateNew, configData, newEntry, Repaint);
+                  GameplayTagDefinitionEditWindow.ShowWindow(TagDefinitionOperation.CreateNew, configData, newEntry, Repaint);
                }
 
                if (GUILayout.Button(editButtonContent, GUILayout.ExpandWidth(false)))
                {
-                  GameplayTagDefinitionEditWindow.ShowModal(TagDefinitionOperation.EditExisting, configData, entry, Repaint);
+                  GameplayTagDefinitionEditWindow.ShowWindow(TagDefinitionOperation.EditExisting, configData, entry, Repaint);
                }
 
                GUI.enabled = false;
@@ -231,7 +233,7 @@ namespace BandoWare.GameplayTags.Editor.Config
             if (GUILayout.Button("Add New Gameplay Tag", GUILayout.ExpandWidth(true)))
             {
                TagDefinitionEntry newEntry = new(k_DefaultNewTagName, "");
-               GameplayTagDefinitionEditWindow.ShowModal(TagDefinitionOperation.CreateNew, configData, newEntry, Repaint);
+               GameplayTagDefinitionEditWindow.ShowWindow(TagDefinitionOperation.CreateNew, configData, newEntry, Repaint);
             }
          }
 

@@ -67,7 +67,9 @@ namespace BandoWare.GameplayTags.Editor
          GUILayout.BeginVertical(EditorStyles.toolbar);
 
          if (GUILayout.Button("Manage Tags", s_Styles.ToolbarButton, GUILayout.ExpandWidth(true)))
-            SettingsService.OpenProjectSettings("Project/Gameplay Tags");
+         {
+            SettingsService.OpenProjectSettings(Config.GameplayTagProjectSettingsProvider.SettingsPath);
+         }
 
          GUILayout.BeginHorizontal(EditorStyles.toolbar);
 

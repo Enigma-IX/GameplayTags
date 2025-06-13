@@ -14,11 +14,6 @@ namespace BandoWare.GameplayTags.Editor.Config
    {
       /////////////////////////////// Member Fields ////////////////////////////////
 
-      private static readonly GUIStyle s_OuterMarginStyle = new()
-      {
-         margin = new RectOffset(10, 10, 10, 5)
-      };
-
       private TagDefinitionEntry m_OriginalEntry;
       private string m_EditedTagName;
       private string m_EditedDescription;
@@ -42,7 +37,7 @@ namespace BandoWare.GameplayTags.Editor.Config
 
       ///////////////////////////// Public Functions ///////////////////////////////
 
-      public static void ShowModal(TagDefinitionOperation operation, GameplayTagConfigData configData, TagDefinitionEntry originalEntry, Action closeCallback = null)
+      public static void ShowWindow(TagDefinitionOperation operation, GameplayTagConfigData configData, TagDefinitionEntry originalEntry, Action closeCallback = null)
       {
          string title = operation switch
          {
@@ -65,7 +60,12 @@ namespace BandoWare.GameplayTags.Editor.Config
 
       private void OnGUI()
       {
-         using (new GUILayout.VerticalScope(s_OuterMarginStyle))
+         GUIStyle outerMarginStyle = new()
+         {
+            margin = new RectOffset(10, 10, 10, 5)
+         };
+
+         using (new GUILayout.VerticalScope(outerMarginStyle))
          {
             GUILayoutOption labelWidthOption = GUILayout.Width(130f);
 
@@ -178,6 +178,11 @@ namespace BandoWare.GameplayTags.Editor.Config
                }
             }
          }
+      }
+
+      private void OnLostFocus()
+      {
+         Close();
       }
 
       private void OnDestroy()
