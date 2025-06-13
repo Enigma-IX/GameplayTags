@@ -20,7 +20,7 @@ namespace BandoWare.GameplayTags.Editor.Config
 
       private Vector2 m_ScrollPosition;
       private float m_MinTagNameFieldWidth = 100f;
-      private float m_TagNameFieldWidth;
+      private float m_TagNameFieldWidth = -1f;
 
       private float TagNameNameFieldWidth
       {
@@ -28,7 +28,7 @@ namespace BandoWare.GameplayTags.Editor.Config
          {
             if (m_TagNameFieldWidth < 0f)
             {
-               m_TagNameFieldWidth = EditorPrefs.GetFloat("GameplayTagProjectSettingsProvider.TagNameNameFieldWidth", 300f);
+               m_TagNameFieldWidth = EditorPrefs.GetFloat("GameplayTagProjectSettingsProvider.TagNameFieldWidth", 300f);
             }
             return m_TagNameFieldWidth;
          }
@@ -36,7 +36,7 @@ namespace BandoWare.GameplayTags.Editor.Config
          {
             if (!Mathf.Approximately(m_TagNameFieldWidth, value))
             {
-               EditorPrefs.SetFloat("GameplayTagProjectSettingsProvider.TagNameNameFieldWidth", value);
+               EditorPrefs.SetFloat("GameplayTagProjectSettingsProvider.TagNameFieldWidth", value);
                m_TagNameFieldWidth = value;
             }
          }

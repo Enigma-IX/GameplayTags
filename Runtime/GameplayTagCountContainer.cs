@@ -47,7 +47,7 @@ namespace BandoWare.GameplayTags
       event OnTagCountChangedDelegate OnAnyTagCountChange;
 
       /// <summary>
-      /// Eve that is called when any tag is added or removed.
+      /// Event that is called when any tag is added or removed.
       /// </summary>
       event OnTagCountChangedDelegate OnAnyTagNewOrRemove;
 
