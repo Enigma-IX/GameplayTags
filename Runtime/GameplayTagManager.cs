@@ -19,6 +19,36 @@ namespace BandoWare.GameplayTags
          return new ReadOnlySpan<GameplayTag>(s_Tags);
       }
 
+      /// <summary>
+      /// Returns all tags that are children of the given filterTag.
+      /// </summary>
+      public static ReadOnlySpan<GameplayTag> GetAllTagsFiltered(GameplayTag filterTag)
+      {
+         InitializeIfNeeded();
+
+         if (!filterTag.IsValid())
+         {
+            // No filters applied
+            return new ReadOnlySpan<GameplayTag>(s_Tags);
+         }
+
+         List<GameplayTag> filteredTags = new();
+
+         foreach (GameplayTag tag in s_Tags)
+         {
+            // Only return the child tags of the filter tag names
+            if (tag.IsValid() && tag.IsChildOf(filterTag))
+            {
+               filteredTags.Add(tag);
+            }
+         }
+
+         return new ReadOnlySpan<GameplayTag>(filteredTags.ToArray());
+      }
+
+      /// <summary>
+      /// Returns all tags that are children from any of the given filterTagNames.
+      /// </summary>
       public static ReadOnlySpan<GameplayTag> GetAllTagsFiltered(params string[] filterTagNames)
       {
          InitializeIfNeeded();
@@ -133,13 +163,12 @@ namespace BandoWare.GameplayTags
          s_TagsDefinitions = context.GenerateDefinitions();
 
          // Skip the first tag definition which is the "None" tag.
-         IEnumerable<GameplayTag> tags = s_TagsDefinitions
-            .Select(definition => definition.Tag)
-            .Skip(1);
+         s_Tags = s_TagsDefinitions.Select(definition => definition.Tag).Skip(1).ToArray();
 
-         s_Tags = Enumerable.ToArray(tags);
          foreach (GameplayTagDefinition definition in s_TagsDefinitions)
+         {
             s_TagDefinitionsByName[definition.TagName] = definition;
+         }
 
          // Remap the OldTagNames registered via TagRenameEntries to point at the TagDefinition of the NewTagName.
          // From newest (last) to oldest (first) rename entry.
