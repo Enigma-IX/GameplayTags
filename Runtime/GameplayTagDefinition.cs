@@ -109,6 +109,9 @@ namespace BandoWare.GameplayTags
          if (RuntimeIndex <= tag.RuntimeIndex)
             return false;
 
+         if (m_ParentTags == null)
+            return false;
+         
          if (m_ParentTags.Length > 1 && tag.RuntimeIndex < m_ParentTags[0].RuntimeIndex)
             return false;
 
@@ -128,6 +131,9 @@ namespace BandoWare.GameplayTags
       public bool IsParentOf(GameplayTag tag)
       {
          if (RuntimeIndex >= tag.RuntimeIndex)
+            return false;
+
+         if (m_ChildTags == null)
             return false;
 
          if (m_ChildTags.Length > 1 && tag.RuntimeIndex > m_ChildTags[^1].RuntimeIndex)
