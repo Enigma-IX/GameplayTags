@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 namespace BandoWare.GameplayTags
@@ -8,6 +9,15 @@ namespace BandoWare.GameplayTags
    [DebuggerDisplay("{m_Name,nq}")]
    public struct GameplayTag : IEquatable<GameplayTag>, ISerializationCallbackReceiver
    {
+      /// <summary>
+      /// Makes it possible to use <see cref="GameplayTag"/> type with UI Builder.
+      /// </summary>
+      internal class GameplayTagConverter : UxmlAttributeConverter<GameplayTag>
+      {
+         public override GameplayTag FromString(string value) => DeserializeFromString(value);
+         public override string ToString(GameplayTag value) => SerializeToString(value);
+      }
+      
       /// <summary>
       /// Represents an invalid tag.
       /// </summary>
@@ -132,41 +142,42 @@ namespace BandoWare.GameplayTags
          return m_Name;
       }
 
-      void ISerializationCallbackReceiver.OnAfterDeserialize()
-      {
-         if (string.IsNullOrEmpty(m_Name))
-         {
-            this = None;
-            return;
-         }
-
-         GameplayTag tag = GameplayTagManager.RequestTag(m_Name);
-         if (tag == None)
-         {
-            UnityEngine.Debug.LogWarning($"No tag registered with name \"{m_Name}\".");
-            this = None;
-            return;
-         }
-
-         this = tag;
-      }
-
       void ISerializationCallbackReceiver.OnBeforeSerialize()
       {
-         if (m_RuntimeIndex == 0)
+         m_Name = SerializeToString(this);
+      }
+
+      void ISerializationCallbackReceiver.OnAfterDeserialize()
+      {
+         this = DeserializeFromString(m_Name);
+      }
+
+      public static string SerializeToString(GameplayTag tag)
+      {
+         if (tag.m_RuntimeIndex == 0)
          {
-            m_Name = null;
-            return;
+            return null;
          }
 
-         GameplayTagDefinition definiton = GameplayTagManager.GetDefinitionFromRuntimeIndex(m_RuntimeIndex);
-         if (definiton == null)
+         GameplayTagDefinition definition = GameplayTagManager.GetDefinitionFromRuntimeIndex(tag.m_RuntimeIndex);
+         return definition?.TagName;
+      }
+
+      public static GameplayTag DeserializeFromString(string tagName)
+      {
+         if (string.IsNullOrEmpty(tagName))
          {
-            m_Name = null;
-            return;
+            return None;
          }
 
-         m_Name = definiton.TagName;
+         GameplayTag tag = GameplayTagManager.RequestTag(tagName);
+         if (tag == None)
+         {
+            UnityEngine.Debug.LogWarning($"[GameplayTag.DeserializeFromString] No tag registered with name \"{tagName}\".");
+            return None;
+         }
+
+         return tag;
       }
 
       private readonly void ValidateIsNotNone()

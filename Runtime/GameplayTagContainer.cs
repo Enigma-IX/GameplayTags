@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 namespace BandoWare.GameplayTags
@@ -156,6 +157,24 @@ namespace BandoWare.GameplayTags
    [DebuggerDisplay("{DebuggerDisplay,nq}")]
    public class GameplayTagContainer : IGameplayTagContainer, ISerializationCallbackReceiver, IEnumerable<GameplayTag>
    {
+      /// <summary>
+      /// Makes it possible to use <see cref="GameplayTagContainer"/> type with UI Builder.
+      /// </summary>
+      internal class GameplayTagContainerConverter : UxmlAttributeConverter<GameplayTagContainer>
+      {
+         public override GameplayTagContainer FromString(string value)
+         {
+            GameplayTagContainer container = new();
+            container.DeserializeFromStringList(value.Split(','));
+            return container;
+         }
+
+         public override string ToString(GameplayTagContainer value)
+         {
+            return string.Join(',', value.SerializeToStringList());
+         }
+      }
+      
       public static GameplayTagContainer Empty { get; } = new();
 
       /// <inheritdoc />
@@ -552,33 +571,44 @@ namespace BandoWare.GameplayTags
 
       void ISerializationCallbackReceiver.OnBeforeSerialize()
       {
-         m_SerializedExplicitTags ??= new();
+         m_SerializedExplicitTags = SerializeToStringList();
+      }
 
-         m_SerializedExplicitTags.Clear();
+      void ISerializationCallbackReceiver.OnAfterDeserialize()
+      {
+         DeserializeFromStringList(m_SerializedExplicitTags);
+      }
+
+      public List<string> SerializeToStringList()
+      {
+         List<string> stringList = new();
+
          if (m_Indices.Explicit == null)
-            return;
+            return stringList;
 
          foreach (GameplayTag tag in new GameplayTagEnumerator(m_Indices.Explicit))
          {
             if (tag == GameplayTag.None)
                continue;
 
-            m_SerializedExplicitTags.Add(tag.Name);
+            stringList.Add(tag.Name);
          }
+
+         return stringList;
       }
 
-      void ISerializationCallbackReceiver.OnAfterDeserialize()
+      public void DeserializeFromStringList(IList<string> stringList)
       {
          m_Indices = GameplayTagContainerIndices.Create();
-         if (m_SerializedExplicitTags == null || m_SerializedExplicitTags.Count == 0)
+         if (stringList == null || stringList.Count == 0)
             return;
 
-         for (int i = 0; i < m_SerializedExplicitTags.Count;)
+         for (int i = 0; i < stringList.Count;)
          {
-            GameplayTag tag = GameplayTagManager.RequestTag(m_SerializedExplicitTags[i]);
+            GameplayTag tag = GameplayTagManager.RequestTag(stringList[i]);
             if (tag == GameplayTag.None)
             {
-               m_SerializedExplicitTags.RemoveAt(i);
+               stringList.RemoveAt(i);
                continue;
             }
 
@@ -590,7 +620,7 @@ namespace BandoWare.GameplayTags
                continue;
             }
 
-            m_SerializedExplicitTags.RemoveAt(i);
+            stringList.RemoveAt(i);
          }
 
          FillImplictTags();

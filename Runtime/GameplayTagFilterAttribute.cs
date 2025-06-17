@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace BandoWare.GameplayTags
 {
-   [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+   [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
    public class GameplayTagFilterAttribute : Attribute
    {
       public string[] FilterTagNames { get; }
