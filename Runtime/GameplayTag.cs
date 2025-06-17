@@ -98,7 +98,22 @@ namespace BandoWare.GameplayTags
          m_RuntimeIndex = runtimeTagIndex;
       }
 
-      /// <inheritdoc cref="GameplayTagDefinition.IsChildOf(GameplayTag)"/>/>
+      public readonly bool IsValid()
+      {
+         return m_RuntimeIndex != 0;
+      }
+
+      /// <summary>
+      /// Tags match if they are equal or this tag is a child of the given tag.<br/>
+      /// "A.B".MatchesTag("A") = true, "A".MatchesTag("A.B") = false.
+      /// </summary>
+      public readonly bool MatchesTag(in GameplayTag tag)
+      {
+         ValidateIsNotNone();
+         return m_RuntimeIndex == tag.m_RuntimeIndex || IsChildOf(tag);
+      }
+
+      /// <inheritdoc cref="GameplayTagDefinition.IsParentOf(GameplayTag)"/>/>
       public readonly bool IsParentOf(in GameplayTag tag)
       {
          ValidateIsNotNone();
