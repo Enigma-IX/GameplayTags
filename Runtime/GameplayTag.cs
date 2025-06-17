@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using UnityEditor.UIElements;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor.UIElements;
+#endif
 
 namespace BandoWare.GameplayTags
 {
@@ -9,6 +12,7 @@ namespace BandoWare.GameplayTags
    [DebuggerDisplay("{m_Name,nq}")]
    public struct GameplayTag : IEquatable<GameplayTag>, ISerializationCallbackReceiver
    {
+#if UNITY_EDITOR
       /// <summary>
       /// Makes it possible to use <see cref="GameplayTag"/> type with UI Builder.
       /// </summary>
@@ -17,7 +21,8 @@ namespace BandoWare.GameplayTags
          public override GameplayTag FromString(string value) => DeserializeFromString(value);
          public override string ToString(GameplayTag value) => SerializeToString(value);
       }
-      
+#endif
+
       /// <summary>
       /// Represents an invalid tag.
       /// </summary>

@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using UnityEditor.UIElements;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor.UIElements;
+#endif
 
 namespace BandoWare.GameplayTags
 {
@@ -157,6 +160,7 @@ namespace BandoWare.GameplayTags
    [DebuggerDisplay("{DebuggerDisplay,nq}")]
    public class GameplayTagContainer : IGameplayTagContainer, ISerializationCallbackReceiver, IEnumerable<GameplayTag>
    {
+#if UNITY_EDITOR
       /// <summary>
       /// Makes it possible to use <see cref="GameplayTagContainer"/> type with UI Builder.
       /// </summary>
@@ -174,6 +178,7 @@ namespace BandoWare.GameplayTags
             return string.Join(',', value.SerializeToStringList());
          }
       }
+#endif
       
       public static GameplayTagContainer Empty { get; } = new();
 

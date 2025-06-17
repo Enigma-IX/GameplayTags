@@ -37,9 +37,11 @@ namespace BandoWare.GameplayTags
 #endif
       }
 
+#if UNITY_EDITOR
       public static string[] GetFilterTagNamesFromField(FieldInfo fieldInfo)
       {
          return fieldInfo?.GetCustomAttribute<GameplayTagFilterAttribute>(false)?.FilterTagNames;
       }
+#endif
    }
 }
