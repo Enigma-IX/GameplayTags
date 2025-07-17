@@ -83,7 +83,7 @@ namespace BandoWare.GameplayTags.Editor.Config
       ///////////////////////////// Public Functions ///////////////////////////////
 
       [SettingsProvider]
-      public static SettingsProvider CreateCarambolaSettingsProvider() => new GameplayTagProjectSettingsProvider();
+      public static SettingsProvider CreateGameplayTagProjectSettingsProvider() => new GameplayTagProjectSettingsProvider();
 
       public GameplayTagProjectSettingsProvider()
          : base(SettingsPath, SettingsScope.Project)
