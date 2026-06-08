@@ -163,6 +163,26 @@ namespace BandoWare.GameplayTags.Editor
          return newSource;
       }
 
+      private void CreateMissingDirectories(string filePath)
+      {
+         string directoryPath = Path.GetDirectoryName(filePath);
+
+         if (!string.IsNullOrEmpty(directoryPath))
+         {
+            try
+            {
+               Directory.CreateDirectory(directoryPath);
+            }
+            catch (Exception e)
+            {
+               throw new Exception($"An error occured while creating directory: {e.Message}");
+            }
+         } else
+         {
+            throw new Exception($"Could not extract a directory path from the provided file path. File path may be empty or null.");
+         }
+      }
+
       private void ValidateFields()
       {
          m_ValidationError = null;
@@ -188,6 +208,8 @@ namespace BandoWare.GameplayTags.Editor
             string filePath = Path.Combine(FileGameplayTagSource.DirectoryPath, m_NewSourceFileName);
             filePath = Path.GetFullPath(filePath);
             filePath = Path.ChangeExtension(filePath, ".json");
+
+            CreateMissingDirectories(filePath);
 
             if (File.Exists(filePath))
             {
