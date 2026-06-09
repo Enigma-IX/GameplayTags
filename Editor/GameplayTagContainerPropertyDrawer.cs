@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace BandoWare.GameplayTags.Editor
       private const float k_TagGap = 4.0f;
       private const float k_ButtonsWidth = 90f;
       private const float k_ButtonHeight = 20f;
-      private const float k_TagHeight = 18f;
+      private const float k_TagHeight = 15f;
 
       private static GUIContent s_TempContent = new();
       private static GUIContent s_EditTagsContent;
@@ -98,7 +99,8 @@ namespace BandoWare.GameplayTags.Editor
          {
             if (GUI.Button(editButtonRect, s_EditTagsContent))
             {
-               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), explicitTagsProperty);
+               string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
+               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), filterTagNames, explicitTagsProperty);
                Rect activatorRect = new(editButtonRect.xMax, editButtonRect.yMin, 280, 0);
                tagTreeView.ShowPopupWindow(activatorRect, 280f);
             }

@@ -11,8 +11,8 @@ namespace BandoWare.GameplayTags.Editor
       private static GUIContent s_TempContent = new();
       private SerializedProperty m_ExplicitTagsProperty;
 
-      public GameplayTagContainerTreeView(TreeViewState treeViewState, SerializedProperty explicitTagsProperty)
-         : base(treeViewState)
+      public GameplayTagContainerTreeView(TreeViewState treeViewState, string[] filterTagNames, SerializedProperty explicitTagsProperty)
+      : base(treeViewState, filterTagNames)
       {
          m_ExplicitTagsProperty = explicitTagsProperty;
          m_ExplicitTagsProperty.serializedObject.Update();
@@ -39,7 +39,6 @@ namespace BandoWare.GameplayTags.Editor
 
          GameplayTagTreeViewItem item = args.item as GameplayTagTreeViewItem;
          bool added;
-
          
          if (IsSelected(item.id) && Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.KeyUp)
          {
