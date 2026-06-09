@@ -22,7 +22,7 @@ namespace BandoWare.GameplayTags
    internal class GameplayTagRegistrationContext
    {
       private List<GameplayTagDefinition> m_Definition = new();
-      private Dictionary<string, GameplayTagDefinition> m_TagsByName = new();
+      private Dictionary<string, GameplayTagDefinition> m_TagsByName = new(StringComparer.OrdinalIgnoreCase);
       private string m_LastRegistrarionErrorMessage;
       private List<GameplayTagRegistrationError> m_RegistrationErrors = new();
 
