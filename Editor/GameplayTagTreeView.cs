@@ -55,6 +55,11 @@ namespace BandoWare.GameplayTags.Editor
          Rect rect = args.rowRect;
          rect.xMin += indent;
 
+         if (IsItemOrAnyChildSelected(args.item))
+         {
+            EditorGUI.DrawRect(args.rowRect, new Color32(44, 93, 135, 255));
+         }
+
          if (isNone)
          {
             if (GUI.Button(rect, args.label, EditorStyles.label))
@@ -88,6 +93,28 @@ namespace BandoWare.GameplayTags.Editor
          }
 
          DoTagRowGUI(rect, item);
+      }
+
+      private bool IsItemOrAnyChildSelected(TreeViewItem item)
+      {
+         if (item != null)
+         {
+            if (IsSelected(item.id))
+               return true;
+
+            if (item.children != null)
+            {
+               foreach (TreeViewItem child in item.children)
+               {
+                  if (IsItemOrAnyChildSelected(child))
+                  {
+                     return true;
+                  }
+               }
+            }
+         }
+
+         return false;
       }
    }
 }
