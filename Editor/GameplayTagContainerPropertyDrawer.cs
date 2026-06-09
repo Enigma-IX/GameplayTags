@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
@@ -57,11 +58,9 @@ namespace BandoWare.GameplayTags.Editor
 
       public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
       {
-         float buttonsHeight = k_ButtonHeight * 2 + k_Gap;
          float tagsInnerHeight = CalcTagsInnerHeight(property);
          float tagsBoxHeight = CalcContentHeight(s_TagBoxStyle, tagsInnerHeight);
-
-         return Mathf.Max(buttonsHeight, tagsBoxHeight) + 6;
+         return k_ButtonHeight + k_Gap + tagsBoxHeight + 4;
       }
 
       private float CalcTagsInnerHeight(SerializedProperty property)
@@ -82,39 +81,35 @@ namespace BandoWare.GameplayTags.Editor
 
          SerializedProperty explicitTagsProperty = property.FindPropertyRelative("m_SerializedExplicitTags");
 
-         Rect editButtonRect = new(position.x, position.y, k_ButtonsWidth, k_ButtonHeight);
-         using (new EditorGUI.DisabledScope(explicitTagsProperty.hasMultipleDifferentValues))
-         {
-            if (GUI.Button(editButtonRect, s_EditTagsContent))
-            {
-               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), explicitTagsProperty);
-               Rect activatorRect = editButtonRect;
-               activatorRect.width = position.width;
-               tagTreeView.ShowPopupWindow(activatorRect, 280f);
-            }
-         }
-
-         Rect clearButtonRect = new(
-            position.x,
-            position.y + k_ButtonHeight + k_Gap,
-            k_ButtonsWidth,
-            k_ButtonHeight
-         );
-
+         Rect clearButtonRect = new(position.x, position.y, k_ButtonsWidth, k_ButtonHeight);
          using (new EditorGUI.DisabledScope(explicitTagsProperty.arraySize == 0))
          {
             if (GUI.Button(clearButtonRect, "Clear All"))
                explicitTagsProperty.arraySize = 0;
          }
 
-         float boxX = position.x + k_ButtonsWidth + k_Gap;
-         float boxWidth = position.width - k_ButtonsWidth - k_Gap;
+         Rect editButtonRect = new(
+            position.x + k_ButtonsWidth + k_Gap,
+            position.y,
+            k_ButtonsWidth,
+            k_ButtonHeight
+         );
+         using (new EditorGUI.DisabledScope(explicitTagsProperty.hasMultipleDifferentValues))
+         {
+            if (GUI.Button(editButtonRect, s_EditTagsContent))
+            {
+               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), explicitTagsProperty);
+               Rect activatorRect = new(editButtonRect.xMax, editButtonRect.yMin, 280, 0);
+               tagTreeView.ShowPopupWindow(activatorRect, 280f);
+            }
+         }
+
+         float boxY = position.y + k_ButtonHeight + k_Gap;
          float tagsInnerHeight = CalcTagsInnerHeight(property);
          float tagsBoxHeight = CalcContentHeight(s_TagBoxStyle, tagsInnerHeight);
-         Rect boxRect = new(boxX, position.y, boxWidth, tagsBoxHeight);
+         Rect boxRect = new(position.x, boxY, position.width, tagsBoxHeight);
 
          GUI.Box(boxRect, GUIContent.none, s_TagBoxStyle);
-
          Rect inner = GetPaddedRect(boxRect, s_TagBoxStyle);
          Rect tagRect = new(inner.x, inner.y, inner.width, k_TagHeight);
 
@@ -131,10 +126,9 @@ namespace BandoWare.GameplayTags.Editor
          }
          else
          {
-            GUI.color = Color.white;
-
             for (int i = 0; i < explicitTagsProperty.arraySize; i++)
             {
+               GUI.Box(tagRect, GUIContent.none);
                SerializedProperty element = explicitTagsProperty.GetArrayElementAtIndex(i);
                GameplayTag tag = GameplayTagManager.RequestTag(element.stringValue, false);
 
@@ -150,11 +144,11 @@ namespace BandoWare.GameplayTags.Editor
                   break;
                }
 
-               Rect labelRect = new(removeButtonRect.xMax + 4, tagRect.y, tagRect.width - 20, tagRect.height);
+               Rect labelRect = new(removeButtonRect.xMax + 4, tagRect.y, tagRect.width - 26, tagRect.height);
 
                Color previousColor = GUI.color;
                if (!isValid)
-                  GUI.color = new Color(previousColor.g, previousColor.g, previousColor.b, previousColor.a * 0.5f);
+                  GUI.color = new Color(previousColor.r, previousColor.g, previousColor.b, previousColor.a * 0.5f);
 
                EditorGUI.LabelField(labelRect, s_TempContent);
 
