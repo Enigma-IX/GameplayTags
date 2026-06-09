@@ -100,6 +100,15 @@ namespace BandoWare.GameplayTags
          ValidateIsNotNone();
          return Definition.IsChildOf(parentTag);
       }
+      
+      /// <summary>
+      /// Tags match if they are equal or this tag is a child of the given tag.<br/>
+      /// "A.B".MatchesTag("A") = true, "A".MatchesTag("A.B") = false.
+      /// </summary>
+      public bool MatchesTag(GameplayTag tag)
+      {
+         return Equals(tag) || IsChildOf(tag);
+      }
 
       public readonly bool Equals(GameplayTag other)
       {
