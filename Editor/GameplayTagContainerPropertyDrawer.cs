@@ -100,7 +100,7 @@ namespace BandoWare.GameplayTags.Editor
             if (GUI.Button(editButtonRect, s_EditTagsContent))
             {
                string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
-               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), filterTagNames, explicitTagsProperty);
+               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState<int>(), filterTagNames, explicitTagsProperty);
                Rect activatorRect = new(editButtonRect.xMax, editButtonRect.yMin, 280, 0);
                tagTreeView.ShowPopupWindow(activatorRect, 280f);
             }

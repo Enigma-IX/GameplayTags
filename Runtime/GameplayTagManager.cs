@@ -39,7 +39,7 @@ namespace BandoWare.GameplayTags
             foreach (string filterTagName in filterTagNames)
             {
                // Only return the child tags of the filter tag names
-               if (tag.Name.StartsWith(filterTagName + '.'))
+               if (tag.MatchesTag(filterTagName))
                {
                   filteredTags.Add(tag);
                   break;

@@ -41,7 +41,7 @@ namespace BandoWare.GameplayTags.Editor
          if (EditorGUI.DropdownButton(position, s_TempContent, FocusType.Keyboard))
          {
             string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
-            GameplayTagTreeView tagTreeView = new(new TreeViewState(), filterTagNames, property, static () =>
+            GameplayTagTreeView tagTreeView = new(new TreeViewState<int>(), filterTagNames, property, static () =>
             {
                EditorWindow.GetWindow<PopupWindow>().Close();
             });
