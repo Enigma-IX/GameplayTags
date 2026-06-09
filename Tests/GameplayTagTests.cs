@@ -64,6 +64,26 @@ namespace BandoWare.GameplayTags.Tests
          Assert.IsTrue(!a.IsChildOf(b));
          Assert.IsTrue(!test.IsChildOf(b));
       }
+      
+      [Test]
+      public void MatchesTagTests()
+      {
+         GameplayTag test = "Test";
+         GameplayTag a = "Test.A";
+         GameplayTag b = "Test.A.B";
+
+         Assert.IsTrue(a.MatchesTag(test));
+         Assert.IsTrue(b.MatchesTag(test));
+         Assert.IsTrue(b.MatchesTag(a));
+         Assert.IsTrue(b.MatchesTag(b));
+         Assert.IsTrue(!a.MatchesTag(b));
+         Assert.IsTrue(!test.MatchesTag(b));
+         Assert.IsTrue(test.MatchesTag(test));
+         Assert.IsTrue(!test.MatchesTag(null));
+         Assert.IsTrue(b.MatchesTag(b.ParentTag));
+         Assert.IsTrue(a.MatchesTag(b.ParentTag));
+         Assert.IsTrue(!test.MatchesTag(b.ParentTag));
+      }
 
       [Test]
       public void ParentTagTests()
