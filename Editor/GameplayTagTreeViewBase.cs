@@ -4,9 +4,19 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+#if UNITY_6000_2_OR_NEWER
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+#else
+using TreeView = UnityEditor.IMGUI.Controls.TreeView;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem;
+#endif
+
 namespace BandoWare.GameplayTags.Editor
 {
-   public class GameplayTagTreeViewItem : TreeViewItem<int>
+   public class GameplayTagTreeViewItem : TreeViewItem
    {
       public GameplayTag Tag => m_Tag;
 
@@ -65,7 +75,7 @@ namespace BandoWare.GameplayTags.Editor
       }
    }
 
-   public abstract class GameplayTagTreeViewBase : TreeViewPopupContent.TreeView
+   public abstract class GameplayTagTreeViewBase : TreeViewPopupContent.TreeViewBase
    {
       public bool IsEmpty => m_IsEmpty;
 
@@ -76,7 +86,7 @@ namespace BandoWare.GameplayTags.Editor
       private AddNewTagPanel m_AddNewTagPanel;
       private DeleteTagPanel m_DeleteTagPanel;
 
-      public GameplayTagTreeViewBase(TreeViewState<int> treeViewState, string[] filterTagNames)
+      public GameplayTagTreeViewBase(TreeViewState treeViewState, string[] filterTagNames)
          : base(treeViewState)
       {
          m_FilterTagNames = filterTagNames;
@@ -275,7 +285,7 @@ namespace BandoWare.GameplayTags.Editor
          return GUILayout.Button(GUIUtility.TempContent(texture, tooltip), EditorStyles.toolbarButton, GUILayout.ExpandWidth(false));
       }
 
-      protected override bool DoesItemMatchSearch(TreeViewItem<int> item, string search)
+      protected override bool DoesItemMatchSearch(TreeViewItem item, string search)
       {
          GameplayTagTreeViewItem tagItem = item as GameplayTagTreeViewItem;
          bool nameMatches = tagItem.Tag.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -293,12 +303,12 @@ namespace BandoWare.GameplayTags.Editor
          return false;
       }
 
-      protected override TreeViewItem<int> BuildRoot()
+      protected override TreeViewItem BuildRoot()
       {
-         TreeViewItem<int> root = new(-2, -1, "<Root>");
+         TreeViewItem root = new(-2, -1, "<Root>");
          m_IsEmpty = true;
 
-         List<TreeViewItem<int>> items = new();
+         List<TreeViewItem> items = new();
 
          foreach (GameplayTag tag in GameplayTagManager.GetAllTagsFiltered(m_FilterTagNames))
          {

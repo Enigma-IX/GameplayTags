@@ -4,6 +4,17 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+
+#if UNITY_6000_2_OR_NEWER
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+#else
+using TreeView = UnityEditor.IMGUI.Controls.TreeView;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem;
+#endif
+
 namespace BandoWare.GameplayTags.Editor
 {
    public class GameplayTagContainerTreeView : GameplayTagTreeViewBase
@@ -11,7 +22,7 @@ namespace BandoWare.GameplayTags.Editor
       private static GUIContent s_TempContent = new();
       private SerializedProperty m_ExplicitTagsProperty;
 
-      public GameplayTagContainerTreeView(TreeViewState<int> treeViewState, string[] filterTagNames, SerializedProperty explicitTagsProperty)
+      public GameplayTagContainerTreeView(TreeViewState treeViewState, string[] filterTagNames, SerializedProperty explicitTagsProperty)
       : base(treeViewState, filterTagNames)
       {
          m_ExplicitTagsProperty = explicitTagsProperty;
@@ -129,7 +140,7 @@ namespace BandoWare.GameplayTags.Editor
 
       private unsafe void UpdateIncludedTags()
       {
-         foreach (TreeViewItem<int> row in GetRows())
+         foreach (TreeViewItem row in GetRows())
          {
             if (row is GameplayTagTreeViewItem item)
             {

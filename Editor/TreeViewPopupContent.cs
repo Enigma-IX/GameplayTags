@@ -2,11 +2,21 @@
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+#if UNITY_6000_2_OR_NEWER
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+#else
+using TreeView = UnityEditor.IMGUI.Controls.TreeView;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem;
+#endif
+
 namespace BandoWare.GameplayTags.Editor
 {
    public static class TreeViewMethodExtensions
    {
-      public static void ShowPopupWindow(this TreeViewPopupContent.TreeView treeView, Rect activatorRect, float maxHeight)
+      public static void ShowPopupWindow(this TreeViewPopupContent.TreeViewBase treeView, Rect activatorRect, float maxHeight)
       {
          TreeViewPopupContent treeViewPopupContent = new(activatorRect.width, maxHeight, treeView);
          PopupWindow.Show(activatorRect, treeViewPopupContent);
@@ -15,9 +25,9 @@ namespace BandoWare.GameplayTags.Editor
 
    public class TreeViewPopupContent : PopupWindowContent
    {
-      public abstract class TreeView : UnityEditor.IMGUI.Controls.TreeView<int>
+      public abstract class TreeViewBase : TreeView
       {
-         public TreeView(TreeViewState<int> state) : base(state)
+         public TreeViewBase(TreeViewState state) : base(state)
          {
          }
 
@@ -31,7 +41,7 @@ namespace BandoWare.GameplayTags.Editor
       private float m_Width;
       private float m_MaxHeight;
 
-      public TreeViewPopupContent(float width, float maxHeight, TreeView tagTreeView)
+      public TreeViewPopupContent(float width, float maxHeight, TreeViewBase tagTreeView)
       {
          m_Width = width;
          m_MaxHeight = maxHeight;

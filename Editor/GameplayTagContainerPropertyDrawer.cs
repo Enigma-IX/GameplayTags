@@ -4,6 +4,17 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+#if UNITY_6000_2_OR_NEWER
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+#else
+using TreeView = UnityEditor.IMGUI.Controls.TreeView;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem;
+#endif
+
+
 namespace BandoWare.GameplayTags.Editor
 {
    [CustomPropertyDrawer(typeof(GameplayTagContainer))]
@@ -100,7 +111,7 @@ namespace BandoWare.GameplayTags.Editor
             if (GUI.Button(editButtonRect, s_EditTagsContent))
             {
                string[] filterTagNames = GameplayTagFilterAttribute.GetFilterTagNamesFromField(fieldInfo);
-               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState<int>(), filterTagNames, explicitTagsProperty);
+               GameplayTagContainerTreeView tagTreeView = new(new TreeViewState(), filterTagNames, explicitTagsProperty);
                Rect activatorRect = new(editButtonRect.xMax, editButtonRect.yMin, 280, 0);
                tagTreeView.ShowPopupWindow(activatorRect, 280f);
             }

@@ -4,6 +4,16 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+#if UNITY_6000_2_OR_NEWER
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+#else
+using TreeView = UnityEditor.IMGUI.Controls.TreeView;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem;
+#endif
+
 namespace BandoWare.GameplayTags.Editor
 {
    public class GameplayTagTreeView : GameplayTagTreeViewBase
@@ -12,7 +22,7 @@ namespace BandoWare.GameplayTags.Editor
       private Action m_OnSelectionChange;
       private SerializedProperty m_TagNameProperty;
 
-      public GameplayTagTreeView(TreeViewState<int> treeViewState, string[] filterTagNames, SerializedProperty tagProperty, Action onSelectionChange)
+      public GameplayTagTreeView(TreeViewState treeViewState, string[] filterTagNames, SerializedProperty tagProperty, Action onSelectionChange)
       : base(treeViewState, filterTagNames)
       {
          m_OnSelectionChange = onSelectionChange;
@@ -43,7 +53,7 @@ namespace BandoWare.GameplayTags.Editor
          }
       }
 
-      protected override bool CanMultiSelect(TreeViewItem<int> item)
+      protected override bool CanMultiSelect(TreeViewItem item)
       {
          return false;
       }
@@ -95,7 +105,7 @@ namespace BandoWare.GameplayTags.Editor
          DoTagRowGUI(rect, item);
       }
 
-      private bool IsItemOrAnyChildSelected(TreeViewItem<int> item)
+      private bool IsItemOrAnyChildSelected(TreeViewItem item)
       {
          if (item != null)
          {
@@ -104,7 +114,7 @@ namespace BandoWare.GameplayTags.Editor
 
             if (item.children != null)
             {
-               foreach (TreeViewItem<int> child in item.children)
+               foreach (TreeViewItem child in item.children)
                {
                   if (IsItemOrAnyChildSelected(child))
                   {
